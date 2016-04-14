@@ -5,13 +5,12 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,6 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import qiufeng.android.R;
 import qiufeng.android.base.BaseActivity;
+import qiufeng.android.model.NoteInfo;
 import qiufeng.android.utils.Constans;
 
 import static qiufeng.android.utils.LogUtils.LOGI;
@@ -31,7 +31,7 @@ public class MainActivity extends BaseActivity
 
     public static final String TAG = makeLogTag(MainActivity.class);
     public NoteListFragment noteListFragment;
-    public ExampleFragment exampleFragment;
+    public AboutFragment aboutFragment;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -69,37 +69,56 @@ public class MainActivity extends BaseActivity
     @OnClick(R.id.fab)
     public void clickFab() {
         //跳转到新建note页面
-        startActivityForResult(new Intent(MainActivity.this,NoteDetailsActivity.class)
-            , Constans.WRITE_NOTE_REQUEST_CODE);
+        startActivityForResult(new Intent(MainActivity.this, NoteDetailsActivity.class)
+                , Constans.WRITE_NOTE_REQUEST_CODE);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        LOGI(TAG, "requestCode的值：" + requestCode);
-        LOGI(TAG, "resultCode的值：" + resultCode);
-        LOGI(TAG, "data的值：" + data.toString());
+//        LOGI(TAG, "requestCode的值：" + requestCode);
+//        LOGI(TAG, "resultCode的值：" + resultCode);
+//        LOGI(TAG, "data的值：" + data.toString());
 
         if (resultCode != RESULT_OK){
             return;
         }
 
+        //读取传递过来的json信息
+        NoteInfo noteInfo = new NoteInfo();
+        noteInfo = noteInfo.fromJson(data.getStringExtra(Constans.SAVE_NOTE_INFO));
+
         //新建笔记
         if (requestCode == Constans.WRITE_NOTE_REQUEST_CODE){
-
+            //如果noteInfo的内容不为空，则保存
+            if (!TextUtils.isEmpty(noteInfo.getContent())) {
+                saveNote(noteInfo);
+            }
         }
 
         //修改笔记
         if (requestCode == Constans.MODIFY_NOTE_REQUEST_CODE){
-
+            //如果修改之后的内容为空，则删除
+            if (TextUtils.isEmpty(noteInfo.getContent())) {
+                noteListFragment.deleteNote();
+            }
+            else {
+                noteListFragment.saveNote(noteInfo.getContent(),noteInfo.getUpdate_date());
+            }
         }
+    }
+
+    //保存笔记
+    private void saveNote(NoteInfo noteInfo) {
+        noteInfo.save();
+        noteListFragment.notifyDataChanged();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (drawer.isDrawerOpen(navigationView)) {
+            drawer.closeDrawer(navigationView);
         } else {
             super.onBackPressed();
         }
@@ -111,20 +130,6 @@ public class MainActivity extends BaseActivity
         inflater.inflate(R.menu.menu_main, menu);
         MenuItem menuItem = menu.findItem(R.id.action_search);//在菜单中找到对应控件的item
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
-//        MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
-//            @Override
-//            public boolean onMenuItemActionExpand(MenuItem item) {
-//                //展开搜索框
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onMenuItemActionCollapse(MenuItem item) {
-//                //关闭搜索框
-//                return true;
-//            }
-//        });
-//        return true;
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -135,8 +140,8 @@ public class MainActivity extends BaseActivity
             @Override
             public boolean onQueryTextChange(String newText) {
                 //文字改变时执行查询操作
-
-                return true;
+                noteListFragment.searchNote(newText);
+                return false;
             }
         });
         return super.onCreateOptionsMenu(menu);
@@ -147,6 +152,7 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 
@@ -159,22 +165,19 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_note) {
             selectFragment(0);
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_about) {
             selectFragment(1);
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
         }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        else if (id == R.id.nav_setting) {
+            startActivity(new Intent(this,SettingsActivity.class));
+        }
+        else if (id == R.id.nav_create) {
+            startActivityForResult(new Intent(MainActivity.this, NoteDetailsActivity.class)
+                    , Constans.WRITE_NOTE_REQUEST_CODE);
+        }
+        drawer.closeDrawer(navigationView);
         return true;
     }
 
@@ -192,14 +195,14 @@ public class MainActivity extends BaseActivity
                 }
                 break;
             case 1:
-                if (exampleFragment == null)
+                if (aboutFragment == null)
                 {
-                    exampleFragment = new ExampleFragment();
-                    ft.add(R.id.fl_container,exampleFragment);
+                    aboutFragment = new AboutFragment();
+                    ft.add(R.id.fl_container, aboutFragment);
                 }
                 else
                 {
-                    ft.show(exampleFragment);
+                    ft.show(aboutFragment);
                 }
                 break;
         }
@@ -210,9 +213,9 @@ public class MainActivity extends BaseActivity
         if (noteListFragment != null) {
             ft.hide(noteListFragment);
         }
-        if (exampleFragment != null)
+        if (aboutFragment != null)
         {
-            ft.hide(exampleFragment);
+            ft.hide(aboutFragment);
         }
     }
 }

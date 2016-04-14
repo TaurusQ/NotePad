@@ -2,6 +2,7 @@ package qiufeng.android;
 
 import android.app.Activity;
 import android.app.Application;
+import android.preference.PreferenceManager;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -18,7 +19,6 @@ public class AppContext extends com.activeandroid.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
     }
 
     public static synchronized void setActiveContext(Activity context) {

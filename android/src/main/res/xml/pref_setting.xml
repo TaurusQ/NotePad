@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="note_show_create_date"
+        android:title="显示创建日期"
+        android:summary="创建笔记时显示笔记的创建日期"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="note_show_update_date"
+        android:title="显示修改日期"
+        android:summary="预览时显示笔记的修改日期"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="note_show_all_content"
+        android:title="显示笔记内容"
+        android:summary="预览时显示全部内容"
+        />
+
+    <ListPreference
+        android:defaultValue="1"
+        android:title="笔记排列顺序"
+        android:entries="@array/pref_settings_list_titles"
+        android:entryValues="@array/pref_settings_list_values"
+        android:key="note_order"
+        android:positiveButtonText="@null"
+        android:negativeButtonText="@null"
+        />
+
+</PreferenceScreen>

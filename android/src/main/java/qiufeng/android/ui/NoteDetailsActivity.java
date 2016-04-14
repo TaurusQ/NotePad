@@ -2,6 +2,8 @@ package qiufeng.android.ui;
 
 
 import android.content.Intent;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,9 +31,10 @@ public class NoteDetailsActivity extends BaseActivity {
     public static final String ARG_NOTE_ID = "note_id";
 
     public String receiveJson,sendJson;
+    public String contentBefore,contentAfter;
     public NoteInfo noteInfo;
 
-//    private int requestCode = -1;
+    private ShareActionProvider shareAction;
 
     @Bind(R.id.et_content)
     EditText etContent;
@@ -52,20 +55,22 @@ public class NoteDetailsActivity extends BaseActivity {
                 noteInfo = noteInfo.fromJson(receiveJson);
                 initExsitData();
                 setTitle("修改笔记");
-//                requestCode = Constans.MODIFY_NOTE_REQUEST_CODE;
             } else {
                 setTitle("创建笔记");
                 noteInfo.setCreate_date(new Date().getTime());
+                //保存创建时间
                 tvCreate.setText("创建于：" + DateUtils.longToString(noteInfo.getCreate_date()));
-//                requestCode = Constans.WRITE_NOTE_REQUEST_CODE;
             }
         }
+
+        //读取已有的内容
+        contentBefore = noteInfo.getContent();
     }
 
     private void initExsitData() {
         if (noteInfo != null) {
             etContent.setText(noteInfo.getContent());
-            tvCreate.setText("创建于："+noteInfo.getCreate_date());
+            tvCreate.setText("创建于："+DateUtils.longToString(noteInfo.getCreate_date()));
         }
     }
 
@@ -77,6 +82,21 @@ public class NoteDetailsActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_details, menu);
+        /**
+        MenuItem item = menu.findItem(R.id.action_share);
+        Intent intent=new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, etContent.getText().toString());
+        shareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        shareAction.setShareIntent(intent);
+        shareAction.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
+            @Override
+            public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
+                startActivity(intent);
+                return true;
+            }
+        });
+         */
         return true;
     }
 
@@ -90,9 +110,14 @@ public class NoteDetailsActivity extends BaseActivity {
             case R.id.action_settings:
                 showTip("点击");
                 break;
+            case R.id.action_share:
+                actionShare();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -100,11 +125,32 @@ public class NoteDetailsActivity extends BaseActivity {
         finish();
     }
 
+    private void actionShare() {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_SUBJECT, "my string");
+        i.putExtra(Intent.EXTRA_TEXT, etContent.getText().toString());
+        startActivity(i);
+
+    }
     //退出时保存数据
     private void saveData() {
-        noteInfo.setContent(etContent.getText().toString());
-        noteInfo.setUpdate_date(new Date().getTime());
-        Intent data = new Intent();
-        setResult(RESULT_OK,data);
+        contentAfter = etContent.getText().toString();
+
+        //如果内容没有改变则保存
+        if (!TextUtils.equals(contentAfter,contentBefore)) {
+            LOGI(TAG,"保存的内容不相同");
+            //设置笔记的内容和修改时间
+            noteInfo.setContent(contentAfter);
+            noteInfo.setUpdate_date(new Date().getTime());
+            Intent data = new Intent();
+            //将对象信息转换成json信息传送
+            data.putExtra(Constans.SAVE_NOTE_INFO,noteInfo.toJson(noteInfo));
+            setResult(RESULT_OK, data);
+        }else{
+            LOGI(TAG,"保存的内容相同");
+            setResult(RESULT_CANCELED);
+        }
+
     }
 }

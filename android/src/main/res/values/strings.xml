@@ -8,4 +8,15 @@
     <string name="action_share">分享</string>>
 
     <string name="title_search_hint">请输入文本</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+    <string-array name="pref_settings_list_titles">
+        <item>按照创建时间排序</item>
+        <item>按照修改时间排序</item>
+    </string-array>
+    <string-array name="pref_settings_list_values">
+        <item>1</item>
+        <item>0</item>
+    </string-array>
 </resources>

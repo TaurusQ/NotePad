@@ -5,10 +5,10 @@
     <item
         android:id="@+id/action_share"
         android:title="@string/action_share"
-        android:icon="@drawable/ic_menu_share"
-
+        android:icon="@drawable/ic_share"
         app:showAsAction="ifRoom"
         app:itemIconTint="@android:color/white"
+
         />
 
     <item

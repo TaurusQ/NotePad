@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="特点："
+        android:layout_margin="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingLeft="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="· Material Design"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingLeft="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="· ActiveAndroid"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingLeft="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="· ButterKnife"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingLeft="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="· CardView"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingLeft="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="· RecyclerView"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="功能介绍："
+        android:layout_margin="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingLeft="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="· 长按笔记卡片删除"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingLeft="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="· 支持内容搜索"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingLeft="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="· 显示创建日期和修改日期（可选）"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:paddingLeft="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="· 分享笔记到社交软件"
+        />
+</LinearLayout>
